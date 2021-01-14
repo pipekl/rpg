@@ -1,59 +1,58 @@
 import java.util.ArrayList;
-import java.util.Map;
 
 abstract class Hero {
 
     protected String nickName;
-    protected int s, a, i, exp, hp, mana; // сила ловкость интеллект опыт здоровье мана
-    protected Mapa coordinates; // координаты героя на карте
-    protected ArrayList<Item> items = new ArrayList<>(); // список поднятых предметов
-    protected int damage; // урон
+    protected int exp, hp, mana;
+    protected ArrayList<Item> items = new ArrayList<>();
+    protected int damage;
 
     public Hero(String nickName) {
         this.nickName = nickName;
-        this.s = s;
-        this.a = a;
-        this.i = i;
-        this.exp = exp;
-        this.hp = hp;
-        this.mana = mana;
-        this.items = items;
-        this.damage = damage;
     }
-
-    public int getMana(){
-        return mana;
-    }
-    public int getDamage(){
-        return damage;
-    }
-    public int getHp(){
-        return hp;
-    }
-    public Mapa getCoordinates() {
-        return coordinates;
-    }
-//    public void goToCursor(int xx, int yy){
-//        x = xx; y = yy; }
-
-    public abstract void attack(Enemy enemy); // этот метод должен быть определен в классах наследниках
-
-    public abstract void defense(Enemy enemy);// этот метод должен быть определен в классах наследниках
-
-    public abstract void openItem(Item item);
-        // метод должен добавлять предмет в список с вероятностью 50 %
-        // для осуществления вероятностных процессов можно использовать случайное число от 0 до 100.
 
     public void newExp(Enemy enemy) {
         int lvl = exp/500;
         exp += enemy.exp;
-        if (exp/500 > lvl)
-            while (exp/500 != lvl) {
+        if (exp/500 > lvl) {
+            System.out.printf("\u001B[32mНовый уровень!\u001B[0m Теперь ваш уровень \u001B[32m%d\u001B[0m\n", exp / 500);
+            while (exp / 500 != lvl) {
                 newLevel();
                 lvl++;
             }
+        }
     }
+
+    public void battle (Enemy enemy) throws InterruptedException {
+        System.out.println("  Герои { hp=" + hp + " mana=" +
+                mana + " }");
+        System.out.println("  Враг { hp=" + enemy.hp + " }");
+
+        int counter = 1;
+        while (hp > 0 & enemy.hp > 0) {
+            Thread.sleep(1000);
+            System.out.println(counter++ + " раунд:");
+            attack(enemy);
+            defense(enemy);
+            System.out.println("    Герои { hp=" + hp + " mana=" + mana + " }");
+            System.out.println("    Враг { hp=" + enemy.hp + " }");
+        }
+        if (hp > 0)
+            newExp(enemy);
+        System.out.println(hp > 0 ? "Победа, герой получил опыт " + enemy.exp : "Поражение");
+        System.out.printf("Герой { HP=%d, MANNA=%d, damage=%d, exp=%d }\n\n", hp, mana, damage, exp);
+        Thread.sleep(2000);
+    }
+
+    public int getDamage(){
+        return damage;
+    }
+
+    public abstract void attack(Enemy enemy);
+
+    public abstract void defense(Enemy enemy);
+
+    public abstract void openItem(Item item);
+
     public abstract void newLevel();
-
-
 }

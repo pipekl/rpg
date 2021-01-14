@@ -1,9 +1,8 @@
-public class Enemy{
-    int hp, damage;
+abstract public class Enemy {
+    int hp, damage, itemBonus;
     int exp;
-    public Enemy(int hp, int damage, int exp){
-        this.hp = hp;
-        this.damage = damage;
-        this.exp = exp;
-    }
+
+    public abstract int getItemBonus();
+
+    public abstract int getHp();
 }
